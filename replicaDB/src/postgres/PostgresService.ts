@@ -7,7 +7,10 @@ import { ColumnMetaData } from "../ColumnMetaData/ColumnMetaData";
 import { chunk as chunkArray } from "lodash";
 import { MySqlService } from "../mysql/MySqlService";
 import { IDatabaseService } from "../Interfaces/IDatabaseService";
-import { RawTableMetaData } from "../Interfaces/RawTableMetaData";
+import {
+  PostgresRawTableMetaData,
+  RawTableMetaData,
+} from "../Interfaces/RawTableMetaData";
 
 interface ConnectionProps {
   user: string;
@@ -24,7 +27,7 @@ export class PostgresService implements IDatabaseService {
   private constructor(client: Client) {
     this.client = client;
   }
-  
+
   public static async getInstance() {
     if (PostgresService.service) {
       return PostgresService.service;
@@ -78,29 +81,28 @@ export class PostgresService implements IDatabaseService {
     }
   }
 
-  // public async getRawTablesMetaData(): Promise<RawTableMetaData[]> {
-  //   const databaseName = this.client.database;
-  //   const { rows } = await this.client.query<RawTableMetaData>(
-  //     `SELECT
-  //         ic.TABLE_NAME AS tableName,
-  //         JSON_ARRAYAGG(JSON_OBJECT("name", ic.COLUMN_NAME, "type", ic.COLUMN_TYPE, "position", ic.ORDINAL_POSITION)) AS columnMetaData
-  //       FROM
-  //         INFORMATION_SCHEMA.COLUMNS ic
-  //       WHERE
-  //           ic.TABLE_SCHEMA = "${databaseName}"
-  //       GROUP BY
-  //           ic.TABLE_NAME`
-  //   );
+  public async getRawTablesMetaData(): Promise<RawTableMetaData[]> {
+    const databaseName = this.client.database;
+    const { rows } = await this.client.query<PostgresRawTableMetaData>(
+      `SELECT
+          ic.TABLE_NAME AS tableName,
+          JSON_ARRAYAGG(JSON_OBJECT("name", ic.COLUMN_NAME, "type", ic.COLUMN_TYPE, "position", ic.ORDINAL_POSITION)) AS columnMetaData
+        FROM
+          INFORMATION_SCHEMA.COLUMNS ic
+        WHERE
+            ic.TABLE_SCHEMA = "${databaseName}"
+        GROUP BY
+            ic.TABLE_NAME`
+    );
 
-  //   return rows; 
-  // }
-  
+    return rows;
+  }
+
   public async findAll(tableName: string): Promise<object[]> {
     const queryString = `SELECT * FROM ${tableName}`;
     const { rows } = await this.client.query<QueryResult>(queryString);
     return rows;
   }
-
 
   public async destructor() {
     await this.client.end();
