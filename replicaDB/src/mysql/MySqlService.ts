@@ -1,6 +1,9 @@
 import mysql, { RowDataPacket } from "mysql2/promise";
 import { ConfigService } from "../Config/ConfigService";
-import { RawTableMetaData } from "../Interfaces/RawTableMetaData";
+import {
+  MySqlRawTableMetaData,
+  RawTableMetaData,
+} from "../Interfaces/RawTableMetaData";
 import { IDatabaseService } from "../Interfaces/IDatabaseService";
 
 export class MySqlService implements IDatabaseService {
@@ -31,7 +34,7 @@ export class MySqlService implements IDatabaseService {
 
   public async getRawTablesMetaData(): Promise<RawTableMetaData[]> {
     const databaseName = this.client.config.database;
-    const [rows] = await this.client.query<RawTableMetaData[]>(
+    const [rows] = await this.client.query<MySqlRawTableMetaData[]>(
       `SELECT
           ic.TABLE_NAME AS tableName,
           JSON_ARRAYAGG(JSON_OBJECT("name", ic.COLUMN_NAME, "type", ic.COLUMN_TYPE, "position", ic.ORDINAL_POSITION)) AS columnMetaData
