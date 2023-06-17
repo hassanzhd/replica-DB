@@ -1,0 +1,5 @@
+FROM node:lts-alpine3.18
+
+RUN npm config rm proxy && \
+npm config rm https-proxy
+RUN npm i -g pnpm

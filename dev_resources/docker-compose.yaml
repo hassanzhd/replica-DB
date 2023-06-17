@@ -1,0 +1,21 @@
+version: '3'
+services:
+  app:
+    container_name: replicaDB_node_env
+    stdin_open: true
+    volumes:
+      - ../:/App
+    build:
+      dockerfile: ./Dockerfile.node
+  mysql:
+    container_name: replicaDB_mysql
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=pwd
+      - MYSQL_DATABASE=test
+  postgres:
+    container_name: replicaDB_postgres
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=pwd
+      - POSTGRES_DB=test
