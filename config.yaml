@@ -1,0 +1,14 @@
+source:
+  engine: mysql
+  host: mysql
+  database: test
+  port: 3306
+  user: root
+  password: pwd
+destination:
+  engine: postgres
+  host: postgres
+  database: test
+  port: 5432
+  user: postgres
+  password: pwd
