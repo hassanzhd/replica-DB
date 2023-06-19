@@ -1,22 +1,19 @@
-import fs from "fs";
-import commandLineArgumentsParser from "minimist-lite";
-import YAML from "yaml";
 import { Client, QueryResult } from "pg";
 import { TableMetaData } from "../TableMetaData/TableMetaData";
 import { ColumnMetaData } from "../ColumnMetaData/ColumnMetaData";
 import { chunk as chunkArray } from "lodash";
-import { MySqlService } from "../mysql/MySqlService";
 import { IDatabaseService } from "../Interfaces/IDatabaseService";
 import {
   PostgresRawTableMetaData,
   RawTableMetaData,
 } from "../Interfaces/RawTableMetaData";
+import { DatabaseConfig } from "../Config/DatabaseConfig";
 
 interface ConnectionProps {
   user: string;
   password: string;
   host: string;
-  port: string;
+  port: number;
   database: string;
 }
 
@@ -28,16 +25,12 @@ export class PostgresService implements IDatabaseService {
     this.client = client;
   }
 
-  public static async getInstance() {
+  public static async getInstance(config: DatabaseConfig) {
     if (PostgresService.service) {
       return PostgresService.service;
     }
 
-    const argv = commandLineArgumentsParser(process.argv.slice(2));
-    const fileContent = fs.readFileSync(argv.f, { encoding: "utf-8" });
-    const { destination } = YAML.parse(fileContent);
-
-    const connectionString = this.getConnectionString(destination);
+    const connectionString = this.getConnectionString(config);
     const client = new Client({
       connectionString: connectionString,
     });
@@ -49,7 +42,7 @@ export class PostgresService implements IDatabaseService {
     const insertQueryStrings: string[] = tableMetaData.map(
       this.getCreateTableQueryString.bind(this)
     );
-    const insertQuery = insertQueryStrings.join("\n");
+    const insertQuery = insertQueryStrings.join("\n")
 
     try {
       await this.client.query(insertQuery);
@@ -60,7 +53,7 @@ export class PostgresService implements IDatabaseService {
   }
 
   public async addRecords(
-    sourceService: MySqlService,
+    sourceService: IDatabaseService,
     tableMetaData: TableMetaData[]
   ) {
     for (let i = 0; i < tableMetaData.length; i++) {
@@ -71,7 +64,6 @@ export class PostgresService implements IDatabaseService {
         new Array(...rows)
       );
       const insertValuesQueryString = insertValuesQueryStrings.join("\n");
-
       try {
         await this.client.query(insertValuesQueryString);
       } catch (error) {
@@ -82,17 +74,27 @@ export class PostgresService implements IDatabaseService {
   }
 
   public async getRawTablesMetaData(): Promise<RawTableMetaData[]> {
-    const databaseName = this.client.database;
     const { rows } = await this.client.query<PostgresRawTableMetaData>(
       `SELECT
-          ic.TABLE_NAME AS tableName,
-          JSON_ARRAYAGG(JSON_OBJECT("name", ic.COLUMN_NAME, "type", ic.COLUMN_TYPE, "position", ic.ORDINAL_POSITION)) AS columnMetaData
+        table_name,
+        json_agg(row_to_json(columns)) AS column_metadata
+      FROM 
+        (
+          SELECT
+          ic.table_name AS table_name,
+          ic.column_name AS name,
+          case 
+            when domain_name is not null then domain_name
+            when data_type='character varying' THEN 'varchar('||character_maximum_length||')'
+            when data_type='numeric' THEN 'numeric('||numeric_precision||','||numeric_scale||')'
+            else data_type
+          end AS type,
+          ic.ordinal_position AS position
         FROM
-          INFORMATION_SCHEMA.COLUMNS ic
-        WHERE
-            ic.TABLE_SCHEMA = "${databaseName}"
-        GROUP BY
-            ic.TABLE_NAME`
+          INFORMATION_SCHEMA.COLUMNS ic 
+        WHERE 
+          ic.table_schema='public') AS columns
+      GROUP BY table_name`
     );
 
     return rows;
