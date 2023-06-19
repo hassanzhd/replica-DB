@@ -1,5 +1,5 @@
-import { ColumnMetaData } from "../ColumnMetaData/ColumnMetaData";
-import { RawTableMetaData } from "../Interfaces/RawTableMetaData";
+import { ColumnMetaData } from "../column_metadata/ColumnMetaData";
+import { RawTableMetaData } from "../interfaces/RawTableMetaData";
 import { TableMetaData } from "./TableMetaData";
 
 export class TableMetaDataMapper {

@@ -2,12 +2,12 @@ import mysql, { RowDataPacket } from "mysql2/promise";
 import {
   MySqlRawTableMetaData,
   RawTableMetaData,
-} from "../Interfaces/RawTableMetaData";
-import { IDatabaseService } from "../Interfaces/IDatabaseService";
-import { TableMetaData } from "../TableMetaData/TableMetaData";
-import { ColumnMetaData } from "../ColumnMetaData/ColumnMetaData";
+} from "../interfaces/RawTableMetaData";
+import { IDatabaseService } from "../interfaces/IDatabaseService";
+import { TableMetaData } from "../table_metadata/TableMetaData";
+import { ColumnMetaData } from "../column_metadata/ColumnMetaData";
 import { chunk as chunkArray } from "lodash";
-import { DatabaseConfig } from "../Config/DatabaseConfig";
+import { DatabaseConfig } from "../config/DatabaseConfig";
 
 export class MySqlService implements IDatabaseService {
   private static service: MySqlService;

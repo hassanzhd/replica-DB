@@ -1,13 +1,13 @@
 import { Client, QueryResult } from "pg";
-import { TableMetaData } from "../TableMetaData/TableMetaData";
-import { ColumnMetaData } from "../ColumnMetaData/ColumnMetaData";
+import { TableMetaData } from "../table_metadata/TableMetaData";
+import { ColumnMetaData } from "../column_metadata/ColumnMetaData";
 import { chunk as chunkArray } from "lodash";
-import { IDatabaseService } from "../Interfaces/IDatabaseService";
+import { IDatabaseService } from "../interfaces/IDatabaseService";
 import {
   PostgresRawTableMetaData,
   RawTableMetaData,
-} from "../Interfaces/RawTableMetaData";
-import { DatabaseConfig } from "../Config/DatabaseConfig";
+} from "../interfaces/RawTableMetaData";
+import { DatabaseConfig } from "../config/DatabaseConfig";
 
 interface ConnectionProps {
   user: string;

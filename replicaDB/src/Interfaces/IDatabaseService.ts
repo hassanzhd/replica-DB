@@ -1,4 +1,4 @@
-import { TableMetaData } from "../TableMetaData/TableMetaData";
+import { TableMetaData } from "../table_metadata/TableMetaData";
 import { RawTableMetaData } from "./RawTableMetaData";
 
 export interface IDatabaseService {

@@ -1,8 +1,8 @@
-import { ConfigService } from "./Config/ConfigService";
-import { TableMetaDataMapper } from "./TableMetaData/TableMetaDataMapper";
+import { ConfigService } from "./config/ConfigService";
+import { TableMetaDataMapper } from "./table_metadata/TableMetaDataMapper";
 import { PostgresService } from "./postgres/PostgresService";
 import { MySqlService } from "./mysql/MySqlService";
-import { IDatabaseService } from "./Interfaces/IDatabaseService";
+import { IDatabaseService } from "./interfaces/IDatabaseService";
 
 async function getDatabaseService(
   targetName: string

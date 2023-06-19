@@ -1,4 +1,4 @@
-import { ColumnMetaData } from "../ColumnMetaData/ColumnMetaData";
+import { ColumnMetaData } from "../column_metadata/ColumnMetaData";
 
 interface TableMetaDataProps {
   tableName: string;
