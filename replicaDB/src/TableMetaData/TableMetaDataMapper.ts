@@ -4,7 +4,7 @@ import { TableMetaData } from "./TableMetaData";
 
 export class TableMetaDataMapper {
   public static toDomain(raw: RawTableMetaData): TableMetaData {
-    const columnMetaData = raw.columnMetaData;
+    const columnMetaData = raw.column_metadata;
     const positionedColumnMetaData = new Array<ColumnMetaData>(
       columnMetaData.length
     );
@@ -16,6 +16,6 @@ export class TableMetaDataMapper {
       );
     });
 
-    return TableMetaData.create(raw.tableName, columnMetaData);
+    return TableMetaData.create(raw.table_name, columnMetaData);
   }
 }

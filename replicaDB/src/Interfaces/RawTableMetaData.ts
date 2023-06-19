@@ -3,8 +3,8 @@ import { RawColumnMetaData } from "./RawColumnMetaData";
 import { QueryResult } from "pg";
 
 export interface RawTableMetaData {
-  tableName: string;
-  columnMetaData: RawColumnMetaData[];
+  table_name: string;
+  column_metadata: RawColumnMetaData[];
 }
 
 export interface MySqlRawTableMetaData
