@@ -7,6 +7,11 @@ export class ConfigService {
   private static service: ConfigService;
   private config: Record<string, DatabaseConfig>;
 
+  public static async getConfig(key: string) {
+    const service = await ConfigService.getInstance();
+    return service.config[key];
+  }
+
   private constructor(config: Record<string, DatabaseConfig>) {
     this.config = config;
   }
@@ -19,10 +24,5 @@ export class ConfigService {
     const fileContent = await fs.readFile(argv.f, { encoding: "utf-8" });
     const config = YAML.parse(fileContent);
     return new ConfigService(config);
-  }
-
-  public static async getConfig(key: string) {
-    const service = await ConfigService.getInstance();
-    return service.config[key];
   }
 }
