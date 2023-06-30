@@ -10,6 +10,7 @@ import { chunk as chunkArray } from "lodash";
 import { DatabaseConfig } from "../config/DatabaseConfig";
 import { SqlQueryService } from "../sql_query/SqlQueryService";
 import { QueryType } from "../sql_query/QueryType";
+import { PrimaryKeyColumn } from "../primary_key_column/PrimaryKeyColumn";
 
 export class MySqlService implements IDatabaseService {
   private static service: MySqlService;
@@ -46,7 +47,7 @@ export class MySqlService implements IDatabaseService {
     if (query != undefined) {
       const [rows] = await this.client.query<MySqlRawTableMetaData[]>(query, [
         databaseName,
-        databaseName
+        databaseName,
       ]);
       return rows;
     }
@@ -105,12 +106,27 @@ export class MySqlService implements IDatabaseService {
     const columnDefinitions: string[] = tableMetaData.columnMetaData.map(
       this.getColumnDefinition.bind(this)
     );
-    const columnDefinitonString = `(${columnDefinitions.join(", ")})`;
-    return createString + columnDefinitonString + ";";
+    let columnDefinitionString = "(";
+    columnDefinitionString += `${columnDefinitions.join(", ")}`;
+    const primaryKeyColumns = tableMetaData.primaryKeyColumns;
+    if (primaryKeyColumns.length != 0) {
+      columnDefinitionString += ", PRIMARY KEY (";
+      const primaryKeyDefinitionString = primaryKeyColumns
+        .map(this.getPrimaryKeyDefinition.bind(this))
+        .join(", ")
+        columnDefinitionString += `${primaryKeyDefinitionString})`;
+      }
+  
+      columnDefinitionString += ")";
+      return createString + columnDefinitionString + ";";
   }
 
   private getColumnDefinition(columnMetaData: ColumnMetaData) {
     return `${columnMetaData.name} ${columnMetaData.type}`;
+  }
+
+  private getPrimaryKeyDefinition(primaryKeyColumn: PrimaryKeyColumn) {
+    return primaryKeyColumn.name;
   }
 
   private getInsertValuesQueryStrings(
