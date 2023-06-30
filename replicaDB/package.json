@@ -6,8 +6,9 @@
   "types": "build/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/typescript/bin/tsc",
-    "clean": "rm -rf build/"
+    "clean": "rm -rf build/",
+    "copy_files": "cp -r resources build/resources",
+    "build": "pnpm run clean && ./node_modules/typescript/bin/tsc && pnpm run copy_files"
   },
   "keywords": [],
   "author": "",
