@@ -1,0 +1,9 @@
+SELECT
+    ic.TABLE_NAME AS table_name,
+    JSON_ARRAYAGG(JSON_OBJECT("name", ic.COLUMN_NAME, "type", ic.COLUMN_TYPE, "position", ic.ORDINAL_POSITION)) AS column_metadata
+FROM
+    INFORMATION_SCHEMA.COLUMNS ic
+WHERE
+    ic.TABLE_SCHEMA = ?
+GROUP BY
+    ic.TABLE_NAME
