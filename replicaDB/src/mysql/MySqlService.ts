@@ -8,6 +8,8 @@ import { TableMetaData } from "../table_metadata/TableMetaData";
 import { ColumnMetaData } from "../column_metadata/ColumnMetaData";
 import { chunk as chunkArray } from "lodash";
 import { DatabaseConfig } from "../config/DatabaseConfig";
+import { SqlQueryService } from "../sql_query/SqlQueryService";
+import { QueryType } from "../sql_query/QueryType";
 
 export class MySqlService implements IDatabaseService {
   private static service: MySqlService;
@@ -28,7 +30,7 @@ export class MySqlService implements IDatabaseService {
       password: config.password,
       database: config.database,
       port: config.port,
-      multipleStatements: true
+      multipleStatements: true,
     });
 
     await mysqlClient.connect();
@@ -37,28 +39,25 @@ export class MySqlService implements IDatabaseService {
 
   public async getRawTablesMetaData(): Promise<RawTableMetaData[]> {
     const databaseName = this.client.config.database;
-    const [rows] = await this.client.query<MySqlRawTableMetaData[]>(
-      `SELECT
-          ic.TABLE_NAME AS table_name,
-          JSON_ARRAYAGG(JSON_OBJECT("name", ic.COLUMN_NAME, "type", ic.COLUMN_TYPE, "position", ic.ORDINAL_POSITION)) AS column_metadata
-        FROM
-          INFORMATION_SCHEMA.COLUMNS ic
-        WHERE
-            ic.TABLE_SCHEMA = "${databaseName}"
-        GROUP BY
-            ic.TABLE_NAME`
+    const query = await SqlQueryService.getQuery(
+      QueryType.GetMySqlTableMetaData
     );
 
-    return rows;
+    if (query != undefined) {
+      const [rows] = await this.client.query<MySqlRawTableMetaData[]>(query, [
+        databaseName,
+      ]);
+      return rows;
+    }
+
+    throw new Error("Couldnot retrieve query.");
   }
 
   public async addTables(tableMetaData: TableMetaData[]) {
     const insertQueryStrings: string[] = tableMetaData.map(
       this.getCreateTableQueryString.bind(this)
     );
-    const insertQuery = insertQueryStrings
-      .join("\n")
-      .replace(new RegExp("character varying", "g"), "TEXT")
+    const insertQuery = insertQueryStrings.join("\n");
 
     try {
       await this.client.query(insertQuery);

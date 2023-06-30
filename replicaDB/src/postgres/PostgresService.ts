@@ -8,6 +8,8 @@ import {
   RawTableMetaData,
 } from "../interfaces/RawTableMetaData";
 import { DatabaseConfig } from "../config/DatabaseConfig";
+import { SqlQueryService } from "../sql_query/SqlQueryService";
+import { QueryType } from "../sql_query/QueryType";
 
 interface ConnectionProps {
   user: string;
@@ -42,7 +44,7 @@ export class PostgresService implements IDatabaseService {
     const insertQueryStrings: string[] = tableMetaData.map(
       this.getCreateTableQueryString.bind(this)
     );
-    const insertQuery = insertQueryStrings.join("\n")
+    const insertQuery = insertQueryStrings.join("\n");
 
     try {
       await this.client.query(insertQuery);
@@ -74,30 +76,16 @@ export class PostgresService implements IDatabaseService {
   }
 
   public async getRawTablesMetaData(): Promise<RawTableMetaData[]> {
-    const { rows } = await this.client.query<PostgresRawTableMetaData>(
-      `SELECT
-        table_name,
-        json_agg(row_to_json(columns)) AS column_metadata
-      FROM 
-        (
-          SELECT
-          ic.table_name AS table_name,
-          ic.column_name AS name,
-          case 
-            when domain_name is not null then domain_name
-            when data_type='character varying' THEN 'varchar('||character_maximum_length||')'
-            when data_type='numeric' THEN 'numeric('||numeric_precision||','||numeric_scale||')'
-            else data_type
-          end AS type,
-          ic.ordinal_position AS position
-        FROM
-          INFORMATION_SCHEMA.COLUMNS ic 
-        WHERE 
-          ic.table_schema='public') AS columns
-      GROUP BY table_name`
+    const query = await SqlQueryService.getQuery(
+      QueryType.GetPostgresTableMetaData
     );
 
-    return rows;
+    if (query != undefined) {
+      const { rows } = await this.client.query<PostgresRawTableMetaData>(query);
+      return rows;
+    }
+
+    throw new Error("Couldnot retrieve query.");
   }
 
   public async findAll(tableName: string): Promise<object[]> {
