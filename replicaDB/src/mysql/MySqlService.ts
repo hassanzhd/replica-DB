@@ -46,6 +46,7 @@ export class MySqlService implements IDatabaseService {
     if (query != undefined) {
       const [rows] = await this.client.query<MySqlRawTableMetaData[]>(query, [
         databaseName,
+        databaseName
       ]);
       return rows;
     }

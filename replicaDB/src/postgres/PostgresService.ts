@@ -10,6 +10,7 @@ import {
 import { DatabaseConfig } from "../config/DatabaseConfig";
 import { SqlQueryService } from "../sql_query/SqlQueryService";
 import { QueryType } from "../sql_query/QueryType";
+import { PrimaryKeyColumn } from "../primary_key_column/PrimaryKeyColumn";
 
 interface ConnectionProps {
   user: string;
@@ -41,13 +42,12 @@ export class PostgresService implements IDatabaseService {
   }
 
   public async addTables(tableMetaData: TableMetaData[]) {
-    const insertQueryStrings: string[] = tableMetaData.map(
+    const createTableQueryStrings: string[] = tableMetaData.map(
       this.getCreateTableQueryString.bind(this)
     );
-    const insertQuery = insertQueryStrings.join("\n");
-
+    const createTableQuery = createTableQueryStrings.join("\n");
     try {
-      await this.client.query(insertQuery);
+      await this.client.query(createTableQuery);
     } catch (error) {
       const typedError = error as Error;
       console.error(typedError.message);
@@ -111,13 +111,29 @@ export class PostgresService implements IDatabaseService {
     return `${columnMetaData.name} ${columnMetaData.type}`;
   }
 
+  private getPrimaryKeyDefinition(primaryKeyColumn: PrimaryKeyColumn) {
+    return primaryKeyColumn.name;
+  }
+
   private getCreateTableQueryString(tableMetaData: TableMetaData) {
     const createString = `CREATE TABLE IF NOT EXISTS ${tableMetaData.tableName} `;
     const columnDefinitions: string[] = tableMetaData.columnMetaData.map(
       this.getColumnDefinition.bind(this)
     );
-    const columnDefinitonString = `(${columnDefinitions.join(", ")})`;
-    return createString + columnDefinitonString + ";";
+    let columnDefinitionString = "(";
+    columnDefinitionString += `${columnDefinitions.join(", ")}`;
+
+    const primaryKeyColumns = tableMetaData.primaryKeyColumns;
+    if (primaryKeyColumns.length != 0) {
+      columnDefinitionString += ", PRIMARY KEY (";
+      const primaryKeyDefinitionString = primaryKeyColumns
+        .map(this.getPrimaryKeyDefinition.bind(this))
+        .join(", ");
+      columnDefinitionString += `${primaryKeyDefinitionString})`;
+    }
+
+    columnDefinitionString += ")";
+    return createString + columnDefinitionString + ";";
   }
 
   private getInsertValuesQueryStrings(

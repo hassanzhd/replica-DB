@@ -1,5 +1,6 @@
 import { ColumnMetaData } from "../column_metadata/ColumnMetaData";
 import { RawTableMetaData } from "../interfaces/RawTableMetaData";
+import { PrimaryKeyColumn } from "../primary_key_column/PrimaryKeyColumn";
 import { TableMetaData } from "./TableMetaData";
 
 export class TableMetaDataMapper {
@@ -16,6 +17,20 @@ export class TableMetaDataMapper {
       );
     });
 
-    return TableMetaData.create(raw.table_name, columnMetaData);
+    const primaryKeyColumns = raw.primary_key_columns;
+    const positionedPrimaryKeyColumns = new Array<PrimaryKeyColumn>(
+      primaryKeyColumns.length
+    );
+
+    primaryKeyColumns.forEach((primaryKeyColumn) => {
+      positionedPrimaryKeyColumns[primaryKeyColumn.position - 1] =
+        PrimaryKeyColumn.create(primaryKeyColumn.name);
+    });
+
+    return TableMetaData.create(
+      raw.table_name,
+      positionedColumnMetaData,
+      positionedPrimaryKeyColumns
+    );
   }
 }
