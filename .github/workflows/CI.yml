@@ -51,7 +51,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build
-      - run: pnpm install
+          path: replicaDB/build
+      - run: pnpm install -P
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.TOKEN}}
