@@ -48,6 +48,9 @@ export class PostgresService implements IDatabaseService {
     const createTableQuery = createTableQueryStrings.join("\n");
     try {
       await this.client.query(createTableQuery);
+      console.log(
+        `Successfully created ${createTableQueryStrings.length} tables.`
+      );
     } catch (error) {
       const typedError = error as Error;
       console.error(typedError.message);
@@ -68,6 +71,9 @@ export class PostgresService implements IDatabaseService {
       const insertValuesQueryString = insertValuesQueryStrings.join("\n");
       try {
         await this.client.query(insertValuesQueryString);
+        console.log(
+          `Successfully added ${rows.length} records to ${metaData.tableName}.`
+        );
       } catch (error) {
         const typedError = error as Error;
         console.error(typedError.message);

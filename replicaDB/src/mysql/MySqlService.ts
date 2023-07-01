@@ -56,13 +56,16 @@ export class MySqlService implements IDatabaseService {
   }
 
   public async addTables(tableMetaData: TableMetaData[]) {
-    const insertQueryStrings: string[] = tableMetaData.map(
+    const createTableQueryStrings: string[] = tableMetaData.map(
       this.getCreateTableQueryString.bind(this)
     );
-    const insertQuery = insertQueryStrings.join("\n");
+    const createTableQuery = createTableQueryStrings.join("\n");
 
     try {
-      await this.client.query(insertQuery);
+      await this.client.query(createTableQuery);
+      console.log(
+        `Successfully created ${createTableQueryStrings.length} tables.`
+      );
     } catch (error) {
       const typedError = error as Error;
       console.error(typedError.message);
@@ -84,6 +87,9 @@ export class MySqlService implements IDatabaseService {
 
       try {
         await this.client.query(insertValuesQueryString);
+        console.log(
+          `Successfully added ${rows.length} records to ${metaData.tableName}.`
+        );
       } catch (error) {
         const typedError = error as Error;
         console.error(typedError.message);
@@ -113,12 +119,12 @@ export class MySqlService implements IDatabaseService {
       columnDefinitionString += ", PRIMARY KEY (";
       const primaryKeyDefinitionString = primaryKeyColumns
         .map(this.getPrimaryKeyDefinition.bind(this))
-        .join(", ")
-        columnDefinitionString += `${primaryKeyDefinitionString})`;
-      }
-  
-      columnDefinitionString += ")";
-      return createString + columnDefinitionString + ";";
+        .join(", ");
+      columnDefinitionString += `${primaryKeyDefinitionString})`;
+    }
+
+    columnDefinitionString += ")";
+    return createString + columnDefinitionString + ";";
   }
 
   private getColumnDefinition(columnMetaData: ColumnMetaData) {
