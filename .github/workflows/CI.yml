@@ -28,7 +28,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: build
-        path: build/
+        path: replicaDB/build
   publish-gpr:
     needs: build
     runs-on: ubuntu-latest
