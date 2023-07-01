@@ -1,4 +1,4 @@
-name: pnpm Example Workflow
+name: replica-db workflow to build and upload package
 on: workflow_dispatch
 jobs:
   build:
@@ -51,6 +51,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build
+      - run: pnpm install
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.TOKEN}}
