@@ -15,10 +15,14 @@ All you need is a `config.yaml` file and replicaDB installed as an npm package.
 1. replicaDB provides multi engine support that replicates databases even with engine differences 😱
 
     Following mappings are currently supported:
-    1. MySQL-MySQL
-    2. Postgres-Postgres
-    2. MySQL-Postgres
-    3. Postgres-MySQL
+
+    | Source   | Destination |
+    | -------- | ----------- |
+    | mysql    | mysql       |
+    | postgres | postgres    |
+    | mysql    | postgres    |
+    | postgres | mysql       |
+
 2. Replicas are created on destination with:
     1. Same table names
     2. Same table schemas
