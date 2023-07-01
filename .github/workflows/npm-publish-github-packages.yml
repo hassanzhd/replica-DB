@@ -12,8 +12,6 @@ jobs:
     - uses: pnpm/action-setup@v2
       with:
         version: 8
-    - name: present
-      run: pwd
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -34,6 +32,9 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 16
