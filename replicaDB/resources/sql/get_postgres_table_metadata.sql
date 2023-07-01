@@ -1,7 +1,7 @@
 SELECT
     table_column.table_name AS table_name,
-    table_column.columns AS column_metadata,
-    table_column_primary_key.columns AS primary_key_columns
+    COALESCE(table_column.columns, '[]') AS column_metadata,
+    COALESCE(table_column_primary_key.columns, '[]') AS primary_key_columns
 FROM
     (
         SELECT
@@ -27,7 +27,7 @@ FROM
         GROUP BY 
             table_name
     ) AS table_column
-JOIN
+LEFT JOIN
     (
         SELECT
             table_name,
