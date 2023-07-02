@@ -10,7 +10,7 @@ FROM
         FROM
             INFORMATION_SCHEMA.COLUMNS ic
         WHERE
-            ic.TABLE_SCHEMA = 'test'
+            ic.TABLE_SCHEMA = ?
         GROUP BY
             ic.TABLE_NAME
     ) AS table_column
@@ -25,7 +25,7 @@ LEFT JOIN
                 information_schema.table_constraints itc 
             ON iku.constraint_name = itc.constraint_name AND
                 iku.table_name = itc.table_name
-            WHERE itc.constraint_schema = 'test' AND
+            WHERE itc.constraint_schema = ? AND
             itc.constraint_type = 'PRIMARY KEY'
             GROUP BY
                 itc.table_name
