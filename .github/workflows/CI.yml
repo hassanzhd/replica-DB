@@ -55,6 +55,6 @@ jobs:
           name: build
           path: replicaDB/build
       - run: pnpm install -P
-      - run: npm publish
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
