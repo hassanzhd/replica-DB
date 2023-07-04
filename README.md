@@ -1,4 +1,5 @@
 # replicaDB
+[![npm version](https://badge.fury.io/js/@hassanzhd%2Freplica-db.svg)](https://badge.fury.io/js/@hassanzhd%2Freplica-db)
 ## What is replicaDB?
 replicaDB is a tool that allows you to replicate databases without:
 
@@ -28,6 +29,26 @@ All you need is a `config.yaml` file and replicaDB installed as an npm package.
     2. Same table schemas
     3. Records part of table
 
+## Supported types:
+| Sno. | mysql type                  | postgres type |
+| ---- | --------------------------- | ------------- |
+| 1    | smallint                    | smallint      | 
+| 2    | bigint                      | bigint        |
+| 3    | text                        | text          |
+| 4    | varchar                     | varchar       |
+| 5    | numeric                     | numeric       |  
+| 6    | char                        | char          |
+| 7    | boolean                     | tinyint(1)    |
+| 8    | timestamp without time zone | datetime      |
+| 9    | timestamp with time zone    | timestamp     |
+| 10    | time without time zone     | time          |
+
+| Sno. | postgres type | mysql type  |
+| ---- | ------------- | ----------- |
+| 1    | integer       | int         | 
+| 2    | uuid          | varchar(36) |
+| 2    | bigserial     | bigint      |
+
 ## Config file schema:
 ```yaml
 source:
@@ -47,6 +68,17 @@ destination:
 ```
 
 `note:` engine key can only contain `mysql` or `postgres`
+
+## Installation:
+You can install the package by the following command:
+```bash
+npm i @hassanzhd/replica-db
+```
+
+## Usage:
+```bash
+npx replica-db -f <PATH_TO_CONFIG.YAML>
+```
 
 ## Limitations:
 Currently replicaDB works with the following known limitations:
