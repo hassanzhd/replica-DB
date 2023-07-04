@@ -24,9 +24,13 @@ async function main() {
   const destinationService = await getDatabaseService("destination");
 
   const rawTablesMetaData = await sourceService.getRawTablesMetaData();
-  const tableMetaData = rawTablesMetaData.map((rawTableMetaData) =>
-    TableMetaDataMapper.toDomain(rawTableMetaData)
-  );
+  const tableMetaData = rawTablesMetaData.map((rawTableMetaData) => {
+    const tableDataMapper = new TableMetaDataMapper(
+      sourceService,
+      destinationService
+    );
+    return tableDataMapper.toDomain(rawTableMetaData);
+  });
 
   await destinationService.addTables(tableMetaData);
   await destinationService.addRecords(sourceService, tableMetaData);
