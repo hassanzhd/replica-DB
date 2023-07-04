@@ -30,6 +30,7 @@ All you need is a `config.yaml` file and replicaDB installed as an npm package.
     3. Records part of table
 
 ## Supported types:
+### mysql->postgres, postgres->mysql mapping:
 | Sno. | mysql type                  | postgres type |
 | ---- | --------------------------- | ------------- |
 | 1    | smallint                    | smallint      | 
@@ -43,6 +44,7 @@ All you need is a `config.yaml` file and replicaDB installed as an npm package.
 | 9    | timestamp with time zone    | timestamp     |
 | 10    | time without time zone     | time          |
 
+### postgres->mysql mapping:
 | Sno. | postgres type | mysql type  |
 | ---- | ------------- | ----------- |
 | 1    | integer       | int         | 
