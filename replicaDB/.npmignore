@@ -5,3 +5,4 @@ tsconfig.json
 jest.config.js
 __tests__
 resources
+!build/resources
