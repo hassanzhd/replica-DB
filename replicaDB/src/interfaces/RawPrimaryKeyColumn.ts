@@ -1,4 +1,4 @@
 export interface RawPrimaryKeyColumn {
-    name: string
-    position: number
+  name: string;
+  position: number;
 }

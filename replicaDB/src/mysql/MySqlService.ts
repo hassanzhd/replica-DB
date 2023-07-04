@@ -106,7 +106,7 @@ export class MySqlService implements IDatabaseService {
   }
 
   public getSourceDestinationKey(destinationEngine: DatabaseEngine) {
-    return this.engine + '.' + destinationEngine;
+    return this.engine + "." + destinationEngine;
   }
 
   public async destructor() {

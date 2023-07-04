@@ -101,9 +101,9 @@ export class PostgresService implements IDatabaseService {
     const { rows } = await this.client.query<QueryResult>(queryString);
     return rows;
   }
-  
+
   public getSourceDestinationKey(destinationEngine: DatabaseEngine) {
-    return this.engine + '.' + destinationEngine;
+    return this.engine + "." + destinationEngine;
   }
 
   public async destructor() {

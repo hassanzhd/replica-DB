@@ -6,7 +6,7 @@ import { RawPrimaryKeyColumn } from "./RawPrimaryKeyColumn";
 export interface RawTableMetaData {
   table_name: string;
   column_metadata: RawColumnMetaData[];
-  primary_key_columns: RawPrimaryKeyColumn[]
+  primary_key_columns: RawPrimaryKeyColumn[];
 }
 
 export interface MySqlRawTableMetaData

@@ -1,9 +1,9 @@
 interface PrimaryKeyColumnProps {
-    name: string
+  name: string;
 }
 
 export class PrimaryKeyColumn {
-    public name: string;
+  public name: string;
 
   private constructor(props: PrimaryKeyColumnProps) {
     this.name = props.name;

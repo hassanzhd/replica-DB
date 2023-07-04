@@ -1,4 +1,4 @@
 export enum DatabaseEngine {
-    mysql = "mysql",
-    postgres = "postgres"
+  mysql = "mysql",
+  postgres = "postgres",
 }
