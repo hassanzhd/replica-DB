@@ -4,6 +4,7 @@
   "description": "",
   "main": "build/main.js",
   "types": "build/main.d.ts",
+  "bin": "build/main.js",
   "scripts": {
     "test": "jest",
     "clean": "rm -rf build/",
