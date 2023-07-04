@@ -34,7 +34,7 @@ export class SqlQueryService {
     for (let index = 0; index < queryNames.length; index++) {
       const queryNumber = queryNames[index];
       const queryPath = queryPaths[index];
-      const queryFullPath = path.join("resources/sql", queryPath);
+      const queryFullPath = path.join(process.cwd(),"resources/sql", queryPath);
       const fileContent = await fs.readFile(queryFullPath, {
         encoding: "utf-8",
       });
