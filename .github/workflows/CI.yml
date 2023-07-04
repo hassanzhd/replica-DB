@@ -24,6 +24,8 @@ jobs:
       run: pnpm install
     - name: Create build directory
       run: pnpm run build
+    - name: Run tests
+      run: pnpm run test
     - name: Upload build directory
       uses: actions/upload-artifact@v3
       with:
