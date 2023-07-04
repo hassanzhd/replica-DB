@@ -1,6 +1,6 @@
 {
   "name": "@hassanzhd/replica-db",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "build/main.js",
   "types": "build/main.d.ts",
