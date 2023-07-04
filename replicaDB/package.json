@@ -1,7 +1,7 @@
 {
   "name": "@hassanzhd/replica-db",
-  "version": "0.0.4",
-  "description": "",
+  "version": "0.0.5",
+  "description": "A minimal replication/ migration tool for databases",
   "main": "build/main.js",
   "types": "build/main.d.ts",
   "bin": "build/main.js",

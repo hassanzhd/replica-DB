@@ -2,3 +2,6 @@ src
 tsconfig.json
 .prettierrc
 .eslintrc.json
+jest.config.js
+__tests__
+resources
