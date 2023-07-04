@@ -1,5 +1,8 @@
 name: replica-db workflow to build and upload package
-on: workflow_dispatch
+on: 
+  push:
+    branches:
+      - release 
 jobs:
   build:
     runs-on: ubuntu-20.04
