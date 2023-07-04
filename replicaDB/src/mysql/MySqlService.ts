@@ -11,10 +11,12 @@ import { DatabaseConfig } from "../config/DatabaseConfig";
 import { SqlQueryService } from "../sql_query/SqlQueryService";
 import { QueryType } from "../sql_query/QueryType";
 import { PrimaryKeyColumn } from "../primary_key_column/PrimaryKeyColumn";
+import { DatabaseEngine } from "../databases_engine/DatabaseEngine";
 
 export class MySqlService implements IDatabaseService {
   private static service: MySqlService;
   private client: mysql.Connection;
+  public engine: DatabaseEngine = DatabaseEngine.mysql;
 
   private constructor(client: mysql.Connection) {
     this.client = client;
@@ -101,6 +103,10 @@ export class MySqlService implements IDatabaseService {
     const queryString = `SELECT * FROM ${tableName}`;
     const [rows] = await this.client.query<RowDataPacket[]>(queryString);
     return rows;
+  }
+
+  public getSourceDestinationKey(destinationEngine: DatabaseEngine) {
+    return this.engine + '.' + destinationEngine;
   }
 
   public async destructor() {

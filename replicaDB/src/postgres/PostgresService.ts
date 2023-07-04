@@ -11,6 +11,7 @@ import { DatabaseConfig } from "../config/DatabaseConfig";
 import { SqlQueryService } from "../sql_query/SqlQueryService";
 import { QueryType } from "../sql_query/QueryType";
 import { PrimaryKeyColumn } from "../primary_key_column/PrimaryKeyColumn";
+import { DatabaseEngine } from "../databases_engine/DatabaseEngine";
 
 interface ConnectionProps {
   user: string;
@@ -23,6 +24,7 @@ interface ConnectionProps {
 export class PostgresService implements IDatabaseService {
   private client: Client;
   private static service: PostgresService;
+  public engine: DatabaseEngine = DatabaseEngine.postgres;
 
   private constructor(client: Client) {
     this.client = client;
@@ -98,6 +100,10 @@ export class PostgresService implements IDatabaseService {
     const queryString = `SELECT * FROM ${tableName}`;
     const { rows } = await this.client.query<QueryResult>(queryString);
     return rows;
+  }
+  
+  public getSourceDestinationKey(destinationEngine: DatabaseEngine) {
+    return this.engine + '.' + destinationEngine;
   }
 
   public async destructor() {
